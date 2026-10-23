@@ -1,0 +1,32 @@
+diff --git a/src/modules/monitoring/mod.rs b/src/modules/monitoring/mod.rs
+index 333ab37..c067f3e 100644
+--- a/src/modules/monitoring/mod.rs
++++ b/src/modules/monitoring/mod.rs
+@@ -1,4 +1,5 @@
+ pub mod dto;
++pub mod finance;
+ pub mod handler;
+ pub mod repository;
+ 
+@@ -10,6 +11,8 @@ use axum::{
+ 
+ pub fn master_router() -> Router<AppState> {
+     Router::new()
++        .route("/finance", get(finance::overview))
++        .route("/finance/transactions", get(finance::transactions))
+         .route("/devices", get(handler::list_all_devices))
+         .route("/health", get(handler::health_overview))
+         .route("/alerts", get(handler::active_alerts))
+diff --git a/src/router/routes.rs b/src/router/routes.rs
+index 5277adf..58ac537 100644
+--- a/src/router/routes.rs
++++ b/src/router/routes.rs
+@@ -337,6 +337,8 @@ impl<B> MakeSpan<B> for ClientIpMakeSpan {
+         crate::modules::withdraw::handler::macro_mark_synced,
+         // Monitoring
+         crate::modules::monitoring::handler::list_all_devices,
++        crate::modules::monitoring::finance::overview,
++        crate::modules::monitoring::finance::transactions,
+         crate::modules::monitoring::handler::health_overview,
+         crate::modules::monitoring::handler::active_alerts,
+         crate::modules::monitoring::handler::master_activity_feed,
